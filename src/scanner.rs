@@ -1,3 +1,5 @@
+use std::usize;
+
 use crate::signature::Signature;
 
 pub fn find_signature(search_region: &Vec<u8>, signature: &Signature) -> Option<usize> {
@@ -14,22 +16,24 @@ pub fn find_signature(search_region: &Vec<u8>, signature: &Signature) -> Option<
 
         i += find;
 
-        if check_mask(i, search_region, &signature) {
+        let (check, delta) = check_mask(&search_region[i..], &signature);
+        if check {
             return Some(i + signature.offset);
         }
 
-        i += 1;
+        i += delta;
     }
 
     return None;
 }
 
-fn check_mask(index: usize, search_region: &Vec<u8>, signature: &Signature) -> bool {
-    for i in 0..signature.pattern.len() {
-        if signature.mask[i] != '?' && signature.pattern[i] != search_region[index + i] {
-            return false;
+fn check_mask(search_region: &[u8], signature: &Signature) -> (bool, usize) {
+    let len = signature.pattern.len();
+    for i in 0..len {
+        if signature.mask[i] != '?' && signature.pattern[i] != search_region[i] {
+            return (false, i);
         }
     }
 
-    return true;
+    return (true, len);
 }
