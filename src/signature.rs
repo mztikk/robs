@@ -30,17 +30,15 @@ impl Signature {
         if signature.len() % 2 != 0 {
             return Err(SignatureLengthError.into());
         } else {
-            // let split: Vec<&str> = signature.splitn(2, "").collect();
-            let split = stringr::splitn(&&signature, 2);
+            let split = stringr::splitn(&signature, 2);
             let mut bytes = Vec::with_capacity(split.len());
             let mut mask = Vec::with_capacity(split.len());
             for i in 0..split.len() {
-                if split[i].chars().any(|x| x.eq(&'?')) {
+                if split[i].contains('?') {
                     bytes.push(0);
                     mask.push('?');
                 } else {
-                    let val = &split[i];
-                    match u8::from_str_radix(&val, 16) {
+                    match u8::from_str_radix(&split[i], 16) {
                         Ok(v) => {
                             bytes.push(v);
                         }
