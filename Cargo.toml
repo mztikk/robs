@@ -1,0 +1,13 @@
+[package]
+name = "robs"
+version = "0.1.0"
+authors = ["Nils Feierabend <mztikk@outlook.de>"]
+edition = "2018"
+repository = "https://github.com/mztikk/robs"
+license = "MIT"
+description = "aob scanning"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+stringr = { version = "0.1.0" }
