@@ -52,12 +52,7 @@ impl Signature {
     }
 
     pub fn new(signature: String, offset: usize) -> Result<Signature, Box<dyn error::Error>> {
-        let (pattern, mask) = match Signature::get_pattern_and_mask_from_signature(&signature) {
-            Ok(v) => v,
-            Err(e) => {
-                return Err(e);
-            }
-        };
+        let (pattern, mask) = Signature::get_pattern_and_mask_from_signature(&signature)?;
 
         return Ok(Signature {
             first_wildcard: mask.iter().position(|&c| c == '?'),
@@ -65,8 +60,17 @@ impl Signature {
             length: pattern.len(),
             pattern,
             mask,
-            sig: signature,
+            sig: Signature::format(&signature)?,
             offset,
         });
+    }
+
+    pub fn format(signature: &String) -> Result<String, SignatureLengthError> {
+        let signature = stringr::remove_whitespace(signature);
+        if signature.len() % 2 != 0 {
+            return Err(SignatureLengthError);
+        }
+
+        return Ok(stringr::splitn_separator(&signature, 2, &" ".to_string()).to_ascii_uppercase());
     }
 }

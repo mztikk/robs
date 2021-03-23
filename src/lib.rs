@@ -5,7 +5,7 @@ pub mod signature;
 mod tests {
     #[test]
     fn sig() {
-        let strsig = "AEFF??DE";
+        let strsig = "AE FF ?? DE";
         let mask = vec!['x', 'x', '?', 'x'];
         let sig = crate::signature::Signature::new(strsig.to_string(), 0).unwrap();
         assert_eq!(sig.sig, strsig);
