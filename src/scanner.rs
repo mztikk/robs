@@ -7,12 +7,8 @@ pub fn find_signature(search_region: &Vec<u8>, signature: &Signature) -> Option<
     let first_item = signature.pattern[first_index];
 
     let mut i: usize = 0;
-    let upper_bound = search_region.len() - signature.pattern.len();
-    while i < upper_bound {
-        let find = match search_region[i..].iter().position(|&x| x == first_item) {
-            Some(v) => v,
-            None => return None,
-        };
+    while i < search_region.len() - signature.pattern.len() {
+        let find = search_region[i..].iter().position(|&x| x == first_item)?;
 
         i += find;
 
