@@ -15,18 +15,18 @@ mod tests {
     #[test]
     fn scan_last() {
         let strsig = "FF";
-        let bytes: Vec<u8> = vec![0x0, 0xFF];
+        let bytes = [0x0, 0xFF];
         let sig = crate::signature::Signature::new(strsig.to_string(), 0).unwrap();
-        let find = crate::scanner::find_signature(&&bytes, &sig).unwrap();
+        let find = crate::scanner::find_signature(&bytes, &sig).unwrap();
         assert_eq!(find, 1);
     }
 
     #[test]
     fn scan_first() {
         let strsig = "FF";
-        let bytes: Vec<u8> = vec![0xFF, 0x0];
+        let bytes = [0xFF, 0x0];
         let sig = crate::signature::Signature::new(strsig.to_string(), 0).unwrap();
-        let find = crate::scanner::find_signature(&&bytes, &sig).unwrap();
+        let find = crate::scanner::find_signature(&bytes, &sig).unwrap();
         assert_eq!(find, 0);
     }
 }
