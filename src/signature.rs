@@ -1,6 +1,6 @@
 use std::{error, fmt, usize};
 
-use stringr::remove_whitespace;
+use stringr::Stringr;
 
 pub struct Signature {
     pub first_wildcard: Option<usize>,
@@ -24,13 +24,13 @@ impl fmt::Display for SignatureLengthError {
 
 impl Signature {
     pub fn get_pattern_and_mask_from_signature(
-        signature: &String,
+        signature: &str,
     ) -> Result<(Vec<u8>, Vec<char>), Box<dyn error::Error>> {
-        let signature = remove_whitespace(signature);
+        let signature = signature.remove_whitespace();
         if signature.len() % 2 != 0 {
             return Err(SignatureLengthError.into());
         } else {
-            let split = stringr::splitn(&signature, 2);
+            let split = signature.splitn(2);
             let mut bytes = Vec::with_capacity(split.len());
             let mut mask = Vec::with_capacity(split.len());
             for i in 0..split.len() {
@@ -51,7 +51,7 @@ impl Signature {
         }
     }
 
-    pub fn new(signature: String, offset: usize) -> Result<Signature, Box<dyn error::Error>> {
+    pub fn new(signature: &str, offset: usize) -> Result<Signature, Box<dyn error::Error>> {
         let (pattern, mask) = Signature::get_pattern_and_mask_from_signature(&signature)?;
 
         return Ok(Signature {
@@ -65,12 +65,12 @@ impl Signature {
         });
     }
 
-    pub fn format(signature: &String) -> Result<String, SignatureLengthError> {
-        let signature = stringr::remove_whitespace(signature);
+    pub fn format(signature: &str) -> Result<String, SignatureLengthError> {
+        let signature = signature.remove_whitespace();
         if signature.len() % 2 != 0 {
             return Err(SignatureLengthError);
         }
 
-        return Ok(stringr::splitn_separator(&signature, 2, &" ".to_string()).to_ascii_uppercase());
+        return Ok(signature.splitn_separator(2, " ").to_ascii_uppercase());
     }
 }

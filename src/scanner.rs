@@ -2,6 +2,28 @@ use std::usize;
 
 use crate::signature::Signature;
 
+pub trait AobScanner {
+    fn find_signature(&self, signature: &Signature) -> Option<usize>;
+}
+
+impl AobScanner for &[u8] {
+    fn find_signature(&self, signature: &Signature) -> Option<usize> {
+        crate::scanner::find_signature(self, signature)
+    }
+}
+
+impl AobScanner for [u8] {
+    fn find_signature(&self, signature: &Signature) -> Option<usize> {
+        crate::scanner::find_signature(self, signature)
+    }
+}
+
+impl AobScanner for Vec<u8> {
+    fn find_signature(&self, signature: &Signature) -> Option<usize> {
+        crate::scanner::find_signature(self, signature)
+    }
+}
+
 pub fn find_signature(search_region: &[u8], signature: &Signature) -> Option<usize> {
     let first_index = signature.first_byte.unwrap();
     let first_item = signature.pattern[first_index];
