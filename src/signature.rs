@@ -12,6 +12,12 @@ pub struct Signature {
     pub offset: usize,
 }
 
+impl fmt::Display for Signature {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", &Signature::format(&self.sig)?)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct SignatureLengthError;
 impl error::Error for SignatureLengthError {}
@@ -19,6 +25,12 @@ impl error::Error for SignatureLengthError {}
 impl fmt::Display for SignatureLengthError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "signature length(excluding whitespace) must be divisible by 2, make sure to prepend bytes with 0 if necessary and make wildcards full ?? instead of single ?")
+    }
+}
+
+impl From<SignatureLengthError> for fmt::Error {
+    fn from(_: SignatureLengthError) -> Self {
+        fmt::Error
     }
 }
 
