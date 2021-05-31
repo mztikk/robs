@@ -40,17 +40,17 @@ impl Signature {
     ) -> Result<(Vec<u8>, Vec<char>), Box<dyn error::Error>> {
         let signature = signature.remove_whitespace();
         if signature.len() % 2 != 0 {
-            return Err(SignatureLengthError.into());
+            Err(SignatureLengthError.into())
         } else {
             let split = signature.splitn(2);
             let mut bytes = Vec::with_capacity(split.len());
             let mut mask = Vec::with_capacity(split.len());
-            for i in 0..split.len() {
-                if split[i].contains('?') {
+            for c in split {
+                if c.contains('?') {
                     bytes.push(0);
                     mask.push('?');
                 } else {
-                    match u8::from_str_radix(&split[i], 16) {
+                    match u8::from_str_radix(&c, 16) {
                         Ok(v) => {
                             bytes.push(v);
                         }
@@ -59,7 +59,7 @@ impl Signature {
                     mask.push('x');
                 }
             }
-            return Ok((bytes, mask));
+            Ok((bytes, mask))
         }
     }
 
@@ -83,6 +83,6 @@ impl Signature {
             return Err(SignatureLengthError);
         }
 
-        return Ok(signature.splitn_separator(2, " ").to_ascii_uppercase());
+        Ok(signature.splitn_separator(2, " ").to_ascii_uppercase())
     }
 }

@@ -1,4 +1,4 @@
-use std::usize;
+use std::{ops::Index, usize};
 
 use crate::signature::Signature;
 
@@ -42,10 +42,13 @@ pub fn find_signature(search_region: &[u8], signature: &Signature) -> Option<usi
         i += delta;
     }
 
-    return None;
+    None
 }
 
-fn check_mask(search_region: &[u8], signature: &Signature) -> (bool, usize) {
+fn check_mask<T: ?Sized>(search_region: &T, signature: &Signature) -> (bool, usize)
+where
+    T: Index<usize, Output = u8>,
+{
     let len = signature.pattern.len();
     for i in 0..len {
         if signature.mask[i] != '?' && signature.pattern[i] != search_region[i] {
@@ -53,5 +56,5 @@ fn check_mask(search_region: &[u8], signature: &Signature) -> (bool, usize) {
         }
     }
 
-    return (true, len);
+    (true, len)
 }
