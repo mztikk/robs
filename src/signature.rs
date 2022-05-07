@@ -64,7 +64,7 @@ impl Signature {
     }
 
     pub fn new(signature: &str, offset: usize) -> Result<Signature, Box<dyn error::Error>> {
-        let (pattern, mask) = Signature::get_pattern_and_mask_from_signature(&signature)?;
+        let (pattern, mask) = Signature::get_pattern_and_mask_from_signature(signature)?;
 
         return Ok(Signature {
             first_wildcard: mask.iter().position(|&c| c == '?'),
@@ -72,7 +72,7 @@ impl Signature {
             length: pattern.len(),
             pattern,
             mask,
-            sig: Signature::format(&signature)?,
+            sig: Signature::format(signature)?,
             offset,
         });
     }
