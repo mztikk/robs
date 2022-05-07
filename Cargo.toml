@@ -11,3 +11,4 @@ description = "aob scanning"
 
 [dependencies]
 stringr = { version = "0.1.2" }
+itertools = "0.10.3"
