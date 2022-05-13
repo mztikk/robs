@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::signature::Signature;
 use std::usize;
 
@@ -30,11 +32,9 @@ pub fn find_signature(search_region: &[u8], signature: &Signature) -> Option<usi
 
     search_region
         .iter()
-        .position(|&item| item == first_item)
-        .and_then(|index| {
-            check_mask(&search_region[index..index + mask_len], signature)
-                .then(|| index + signature.offset)
-        })
+        .positions(|&item| item == first_item)
+        .find(|&index| check_mask(&search_region[index..index + mask_len], signature))
+        .map(|index| index + signature.offset)
 }
 
 fn check_mask(search_region: &[u8], signature: &Signature) -> bool {
@@ -64,8 +64,8 @@ mod tests {
     #[test]
     fn test_find_signature() {
         let search_region = &[
-            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D,
-            0x0E, 0x0F,
+            0x00, 0x0B, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
+            0x0D, 0x0E, 0x0F,
         ];
         let signature = Signature::new("0B ?? 0D", 0);
         assert!(signature.is_ok());
@@ -73,7 +73,7 @@ mod tests {
         let find = find_signature(search_region, &signature);
         assert!(find.is_some());
         let find = find.unwrap();
-        assert_eq!(find, 11);
+        assert_eq!(find, 12);
     }
 
     #[test]
