@@ -67,7 +67,7 @@ impl Signature {
         let indices = mask
             .iter()
             .enumerate()
-            .filter_map(|(i, &m)| if m == 'x' { Some(i) } else { None })
+            .filter_map(|(i, &m)| (m == 'x').then(|| i))
             .collect();
 
         return Ok(Signature {
