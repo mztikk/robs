@@ -1,5 +1,4 @@
 use crate::signature::Signature;
-use itertools::multizip;
 use std::usize;
 
 pub trait AobScanner {
@@ -39,16 +38,10 @@ pub fn find_signature(search_region: &[u8], signature: &Signature) -> Option<usi
 }
 
 fn check_mask(search_region: &[u8], signature: &Signature) -> bool {
-    multizip((
-        search_region.iter(),
-        signature.mask.iter(),
-        signature.pattern.iter(),
-    ))
-    .all(|(item, mask, pattern)| match mask {
-        '?' => true,
-        'x' => item == pattern,
-        _ => false,
-    })
+    signature
+        .matching_indices
+        .iter()
+        .all(|&i| search_region[i] == signature.pattern[i])
 }
 
 #[cfg(test)]
