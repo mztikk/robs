@@ -39,27 +39,27 @@ impl Signature {
     ) -> Result<(Vec<u8>, Vec<char>), SignatureParseError> {
         let signature = signature.remove_whitespace();
         if signature.len() % 2 != 0 {
-            Err(SignatureParseError::InvalidLength(signature.len()))
-        } else {
-            let split = signature.splitn(2);
-            let mut bytes = Vec::with_capacity(split.len());
-            let mut mask = Vec::with_capacity(split.len());
-            for c in split {
-                if c.contains('?') {
-                    bytes.push(0);
-                    mask.push('?');
-                } else {
-                    match u8::from_str_radix(&c, 16) {
-                        Ok(v) => {
-                            bytes.push(v);
-                        }
-                        Err(_e) => return Err(SignatureParseError::InvalidString(c)),
-                    }
-                    mask.push('x');
-                }
-            }
-            Ok((bytes, mask))
+            return Err(SignatureParseError::InvalidLength(signature.len()));
         }
+
+        let split = signature.splitn(2);
+        let mut bytes = Vec::with_capacity(split.len());
+        let mut mask = Vec::with_capacity(split.len());
+
+        for c in split {
+            if c.contains('?') {
+                bytes.push(0);
+                mask.push('?');
+            } else {
+                bytes.push(
+                    u8::from_str_radix(&c, 16)
+                        .map_err(|_e| SignatureParseError::InvalidString(c))?,
+                );
+                mask.push('x');
+            }
+        }
+
+        Ok((bytes, mask))
     }
 
     pub fn new(signature: &str, offset: usize) -> Result<Signature, SignatureParseError> {
