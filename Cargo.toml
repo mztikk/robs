@@ -1,8 +1,8 @@
 [package]
 name = "robs"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["Nils Feierabend <mztikk@outlook.de>"]
-edition = "2018"
+edition = "2021"
 repository = "https://github.com/mztikk/robs"
 license = "MIT"
 description = "aob scanning"
