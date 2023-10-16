@@ -1,5 +1,4 @@
 use crate::signature::Signature;
-use itertools::Itertools;
 use rayon::prelude::*;
 use std::usize;
 
