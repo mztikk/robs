@@ -1,6 +1,6 @@
-use itertools::Itertools;
-
 use crate::signature::Signature;
+use itertools::Itertools;
+use rayon::prelude::*;
 use std::usize;
 
 pub trait AobScanner {
@@ -31,9 +31,9 @@ pub fn find_signature(search_region: &[u8], signature: &Signature) -> Option<usi
     let mask_len = signature.mask.len();
 
     search_region
-        .iter()
+        .par_iter()
         .positions(|&item| item == first_item)
-        .find(|&index| {
+        .find_any(|&index| {
             check_mask(
                 &search_region[(index - first_index)..(index + mask_len)],
                 signature,

@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use std::{fmt, usize};
 use stringr::Stringr;
 use thiserror::Error;
@@ -64,11 +65,7 @@ impl Signature {
 
     pub fn new(signature: &str, offset: usize) -> Result<Signature, SignatureParseError> {
         let (pattern, mask) = Signature::get_pattern_and_mask_from_signature(signature)?;
-        let indices = mask
-            .iter()
-            .enumerate()
-            .filter_map(|(i, &m)| (m == 'x').then(|| i))
-            .collect();
+        let indices = mask.iter().positions(|c| *c == 'x').collect();
 
         return Ok(Signature {
             first_wildcard: mask.iter().position(|&c| c == '?'),
