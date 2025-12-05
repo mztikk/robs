@@ -32,6 +32,7 @@ pub fn find_signature(search_region: &[u8], signature: &Signature) -> Option<usi
     search_region
         .par_iter()
         .positions(|&item| item == first_item)
+        .filter(|&index| index + mask_len <= search_region.len())
         .find_any(|&index| {
             check_mask(
                 &search_region[(index - first_index)..(index + mask_len)],
